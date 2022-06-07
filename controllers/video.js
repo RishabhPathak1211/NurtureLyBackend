@@ -12,20 +12,37 @@ module.exports.fetchVideos = async (req, res, next) => {
             const newVideos = [];
             const types = ['Cognitive', 'Fine Motor', 'Sensory', 'Gross Motor', 'Speech']
             for (let val of types) {
+                let level;
+                switch (val) {
+                    case 'Cognitive':
+                        level = patient.currentLevel.cognitive;
+                        break;
+                    case 'Fine Motor':
+                        level = patient.currentLevel.fineMotor;
+                        break;
+                    case 'Speech':
+                        level = patient.currentLevel.speech;
+                        break;
+                    case 'Gross Motor':
+                        level = patient.currentLevel.grossMotor;
+                        break;
+                    case 'Sensory':
+                        level = patient.currentLevel.sensory;
+                        break;
+                }
                 let count = await videoModel.countDocuments({ 
                     category: val,
-                    difficulty: patient.currentLevel,
+                    difficulty: level,
                     _id: { $nin: patient.videosCompleted } 
                 });
                 let random = Math.floor(Math.random() * count);
                 let video = await videoModel.findOne({ 
                     category: val,
-                    difficulty: patient.currentLevel,
+                    difficulty: level,
                     _id: { $nin: patient.videosCompleted }
                 }).skip(random);
                 if (video) newVideos.push(video._id);
             }
-            console.log(newVideos);
             const newPatient = await patientModel.findByIdAndUpdate(
                 user.patient_id, { todayVideos: newVideos, updateVideos: false }, { new: true }).populate('todayVideos');
             return res.status(201).json(newPatient.todayVideos);

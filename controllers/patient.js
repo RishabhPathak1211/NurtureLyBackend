@@ -94,3 +94,22 @@ module.exports.watchVideo = async (req, res, next) => {
         next(new ExpressError());
     }
 }
+
+module.exports.updateLevel = async (req, res, next) => {
+    const { user } = req;
+    const { category } = req.params;
+    const { method } = req.query;
+    if (!user) return next(new ExpressError('Authorization Failed', 403));
+    try {
+        const level = `currentLevel.${category}`;
+        let flag;
+        if (method === 'increase') flag = 1;
+        else if (method === 'decrease') flag = -1;
+        const update = { $inc: { [level]: flag } };
+        await patientModel.findByIdAndUpdate(user.patient_id, update);
+        return res.status(201).json({ success: true });
+    } catch (err) {
+        console.error(err);
+        next(new ExpressError());
+    }
+}

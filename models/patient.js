@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
 
+const options = { type: Number, default: 5 };
+
+const levelSchema = new mongoose.Schema({
+    cognitive: options,
+    fineMotor: options,
+    grossMotor: options,
+    speech: options,
+    sensory: options,
+})
+
 const patientSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -18,8 +28,8 @@ const patientSchema = new mongoose.Schema({
         default: null
     },
     currentLevel: {
-        type: Number,
-        default: 5
+        type: levelSchema,
+        default: () => ({})
     },
     updateVideos: {
         type: Boolean,

@@ -9,6 +9,7 @@ router.route('/find').get(patientController.findUser);
 router.route('/authenticate').post(patientController.authenticate);
 router.route('/request/:doctorId').put(auth, patientController.postRequest);
 router.route('/watchVideo/:videoId').put(auth, patientController.watchVideo);
+router.route('/updateLevel/:category').put(auth, patientController.updateLevel);
 // router.route('/getDoctorList').get(patientController.getDoctorList);
 
 module.exports = router;

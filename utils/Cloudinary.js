@@ -22,7 +22,7 @@ db.once('open', () => console.log('Database Connected'));
 
 const func = async () => {
     const res = await cloudinary.search.expression('folder:NurtureLy').execute();
-    const links = res.resources.map((item) => {
+    const links = res.resources.map((item, i) => {
         let title = item.filename.split('_').slice(0, -1).join(' ');
         let description = `This is a demo description of the video ${title}. I dont know what to say about it but I need to say something about it so that it seems like this is a large description and fills the page. Oh well, guess I just did lmao`;
         let categories = ['Cognitive', 'Fine Motor', 'Sensory', 'Gross Motor', 'Speech'];
@@ -30,8 +30,8 @@ const func = async () => {
             link: item.secure_url,
             title,
             description,
-            difficulty: Math.floor(Math.random() * (6 - 4 + 1) + 4),
-            category: categories[Math.floor(Math.random() * 5)],
+            difficulty: (i < 15) ? 5 : 6,
+            category: categories[(i % 5)],
             thumbnail: null
         }
     });
