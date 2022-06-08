@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const options = { type: Number, default: 5 };
+const options = { type: Number, default: 3 };
 
 const levelSchema = new mongoose.Schema({
     cognitive: options,
@@ -19,7 +19,7 @@ const patientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    age: Number,
+    dob: Date,
     phone: String,
     address: String,
     doctor: {

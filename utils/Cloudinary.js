@@ -10,7 +10,9 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY 
 });
 
-const dbURL = process.env.DB_URL;
+// const dbURL = process.env.DB_URL;
+// const dbURL = 'mongodb://127.0.0.1:27017/NurtureLy';
+const dbURL = 'mongodb+srv://accensusdevelopers:admin@nurturelycluster.9rodexj.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(dbURL, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
@@ -30,7 +32,9 @@ const func = async () => {
             link: item.secure_url,
             title,
             description,
-            difficulty: (i < 15) ? 5 : 6,
+            monthMin: 0,
+            monthMax: 3,
+            difficulty: (i < 15) ? 3 : 4,
             category: categories[(i % 5)],
             thumbnail: null
         }

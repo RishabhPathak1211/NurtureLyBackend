@@ -6,6 +6,8 @@ const videoSchema = new mongoose.Schema({
     description: String,
     title: String,
     difficulty: Number,
+    monthMin: Number,
+    monthMax: Number,
     category: {
         type: String,
         enum: ['Cognitive', 'Fine Motor', 'Sensory', 'Gross Motor', 'Speech']

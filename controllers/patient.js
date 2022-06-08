@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const patientModel = require('../models/patient');
 const doctorModel = require('../models/doctor');
+const videoModel = require('../models/video');
 const ExpressError = require('../utils/ExpressError');
 
 const token_key = process.env.TOKEN_KEY;
@@ -22,12 +23,12 @@ module.exports.authenticate = async (req, res, next) => {
     try {
         let patient = await patientModel.findOne({ name, email });
         if (!patient) {
-            const { phone, age, address } = req.body;
+            const { phone, dob, address } = req.body;
             patient = await patientModel.create({
                 name,
                 email,
                 phone,
-                age,
+                dob,
                 address
             });
         }
@@ -103,6 +104,10 @@ module.exports.updateLevel = async (req, res, next) => {
     try {
         const level = `currentLevel.${category}`;
         let flag;
+        const patient = await patientModel.findById(user.patient_id);
+        if ((patient.currentLevel[category] === 5 && method === 'increase') 
+            || (patient.currentLevel[category] === 1 && method === 'decrease'))
+                return res.status(201).json({ success: true });
         if (method === 'increase') flag = 1;
         else if (method === 'decrease') flag = -1;
         const update = { $inc: { [level]: flag } };
@@ -113,3 +118,25 @@ module.exports.updateLevel = async (req, res, next) => {
         next(new ExpressError());
     }
 }
+
+// module.exports.developmentChart = async (req, res, next) => {
+//     const { user } = req.user;
+//     const { category } = req.query;
+//     if (!user) return next(new ExpressError('Authorization Failed', 403));
+//     try {
+//         const patient = await patientModel.findById(user.patient_id);
+//         const videosWatched = await videoModel.find({
+//             category,
+//             _id: { $in: patient.videosCompleted }
+//         });
+//         const allVideos = await videoModel.find({ category });
+
+//         let yaxisPatient = new Array(10).fill(0);
+//         let yaxisAverage = new Array(10).fill(0);
+//         for (let video in videosWatched) yaxisPatient[video.difficulty - 1]++;
+//         for 
+        
+//     } catch (err) {
+
+//     }
+// }

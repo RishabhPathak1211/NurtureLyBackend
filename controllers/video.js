@@ -30,21 +30,35 @@ module.exports.fetchVideos = async (req, res, next) => {
                         level = patient.currentLevel.sensory;
                         break;
                 }
+
+                const today = new Date();
+                let months = today.getFullYear() - patient.dob.getFullYear();
+                months -= patient.dob.getMonth();
+                months += today.getMonth();
+
+                console.log(months);
+
                 let count = await videoModel.countDocuments({ 
+                    monthMin: { $lte: months },
+                    monthMax: { $gte: months},
                     category: val,
                     difficulty: level,
                     _id: { $nin: patient.videosCompleted } 
                 });
+
                 let random = Math.floor(Math.random() * count);
                 let video = await videoModel.findOne({ 
+                    monthMin: { $lte: months },
+                    monthMax: { $gte: months},
                     category: val,
                     difficulty: level,
                     _id: { $nin: patient.videosCompleted }
                 }).skip(random);
                 if (video) newVideos.push(video._id);
             }
+
             const newPatient = await patientModel.findByIdAndUpdate(
-                user.patient_id, { todayVideos: newVideos, updateVideos: false }, { new: true }).populate('todayVideos');
+                user.patient_id, { todayVideos: newVideos, /*updateVideos: false*/ }, { new: true }).populate('todayVideos');
             return res.status(201).json(newPatient.todayVideos);
         }
     } catch (err) {

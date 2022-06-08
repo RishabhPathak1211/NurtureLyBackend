@@ -15,4 +15,4 @@ const initScheduleJobs = () => {
     nonPremiumVideoUpdate.start();
 }
 
-initScheduleJobs();
+module.exports = initScheduleJobs;
