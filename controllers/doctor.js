@@ -3,8 +3,6 @@ const doctorModel = require('../models/doctor');
 const patientModel = require('../models/patient');
 const ExpressError = require('../utils/ExpressError');
 
-const token_key = 'thisistokenkey';
-
 module.exports.findUser = async (req, res, next) => {
     const { username, email } = req.query;
     try {
@@ -19,9 +17,11 @@ module.exports.findUser = async (req, res, next) => {
 
 module.exports.authenticate = async (req, res, next) => {
     const { username, email } = req.body;
+    const token_key = process.env.TOKEN_KEY
     try {
         let doctor = await doctorModel.findOne({ username, email });
         if (!doctor) {
+            const { mci, phone, clinicAddress } = req.body;
             doctor = await doctorModel.create({
                 username,
                 email,

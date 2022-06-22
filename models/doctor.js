@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const patientAccSchema = mongoose.Schema({
+const patientAccSchema = new mongoose.Schema({
     patient: {
         type: mongoose.Types.ObjectId,
         ref: 'Patient',
@@ -8,7 +8,7 @@ const patientAccSchema = mongoose.Schema({
     acceptedOn: Date
 });
 
-const patientPenShema = mongoose.Schema({
+const patientPenShema = new mongoose.Schema({
     patient: { 
         type: mongoose.Types.ObjectId,
         ref: 'Patient'
@@ -16,7 +16,7 @@ const patientPenShema = mongoose.Schema({
     pendingSince: Date
 });
 
-const doctorSchema = mongoose.Schema({
+const doctorSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,

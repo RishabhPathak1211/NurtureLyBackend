@@ -10,6 +10,7 @@ const ExpressError = require('./utils/ExpressError');
 const doctorRoutes = require('./routes/doctor');
 const patientRoutes = require('./routes/patient');
 const videoRoutes = require('./routes/video');
+const appointmentRoutes = require('./routes/appointment');
 
 const dbURL = process.env.DB_URL;
 mongoose.connect(dbURL, {
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use('/api/v1/doctor', doctorRoutes);
 app.use('/api/v1/patient', patientRoutes);
 app.use('/api/v1/video', videoRoutes);
+app.use('/api/v1/appointment', appointmentRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({ msg: 'Server Running' });
