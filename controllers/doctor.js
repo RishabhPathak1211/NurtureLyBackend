@@ -6,7 +6,9 @@ const ExpressError = require('../utils/ExpressError');
 module.exports.findUser = async (req, res, next) => {
     const { username, email } = req.query;
     try {
+        console.log(username + email);
         const doctor = await doctorModel.findOne({ username, email });
+        console.log(doctor);
         if (doctor) return res.status(200).json({ found: true });
         else return res.status(200).json({ found: false });
     } catch (err) {
