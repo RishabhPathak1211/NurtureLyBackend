@@ -29,7 +29,9 @@ module.exports.authenticate = async (req, res, next) => {
                 email,
                 mci,
                 phone,
-                clinicAddress
+                clinicAddress,
+                location,
+                clinicTimings
             });
         }
 

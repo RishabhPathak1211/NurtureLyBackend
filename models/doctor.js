@@ -9,7 +9,7 @@ const patientAccSchema = new mongoose.Schema({
 });
 
 const patientPenShema = new mongoose.Schema({
-    patient: { 
+    patient: {
         type: mongoose.Types.ObjectId,
         ref: 'Patient'
     },
@@ -28,6 +28,8 @@ const doctorSchema = new mongoose.Schema({
     phone: String,
     mci: String,
     clinicAddress: String,
+    location: String,
+    clinicTimings: String,
     patientsAcc: {
         type: [patientAccSchema],
         default: [],

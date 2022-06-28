@@ -33,9 +33,11 @@ module.exports.fetchAppointment = async (req, res, next) => {
 
 module.exports.fetchAppointments = async (req, res, next) => {
     const { user } = req;
+    const { type } = req.query;
     if (!user) return next(new ExpressError('Authorization Failed', 403));
+    if (type !== 'pending' && type !== 'approved') return next(new ExpressError('Invalid Type', 401));
     try {
-        const appointments = await appointmentModel.find({ doctor: user.doctor_id }).sort({ dateTime: -1 });
+        const appointments = await appointmentModel.find({ doctor: user.doctor_id, status: type }).sort({ dateTime: -1 });
         return res.status(200).json({ appointments });
     } catch (err) {
         console.log(err);
