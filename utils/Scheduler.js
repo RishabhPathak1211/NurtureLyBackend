@@ -9,7 +9,12 @@ const initScheduleJobs = () => {
 
     const nonPremiumVideoUpdate = CronJob.schedule('0 0 * * SUN', async () => {
         await patientModel.updateMany({ premium: false }, { updateVideos: true })
-    })
+    });
+
+    // const getAverageGraphData = CronJob.schedule('0 0 * * *', async () => {
+    //     const patients = await patientModel.find({});
+
+    // })
 
     premiumVideoUpdate.start();
     nonPremiumVideoUpdate.start();

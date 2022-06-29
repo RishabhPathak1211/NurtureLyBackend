@@ -13,6 +13,7 @@ const patientRoutes = require('./routes/patient');
 const videoRoutes = require('./routes/video');
 const appointmentRoutes = require('./routes/appointment');
 const fileRoutes = require('./routes/file');
+const graphRoutes = require('./routes/graph');
 
 const dbURL = process.env.DB_URL;
 mongoose.connect(dbURL, {
@@ -34,6 +35,7 @@ app.use('/api/v1/patient', patientRoutes);
 app.use('/api/v1/video', videoRoutes);
 app.use('/api/v1/appointment', appointmentRoutes);
 app.use('/api/v1/file', fileRoutes);
+app.use('/api/v1/graph', graphRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({ msg: 'Server Running' });

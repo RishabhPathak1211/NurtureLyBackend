@@ -2,9 +2,26 @@ const jwt = require('jsonwebtoken');
 const patientModel = require('../models/patient');
 const doctorModel = require('../models/doctor');
 const videoModel = require('../models/video');
+const graphModel = require('../models/graph');
 const ExpressError = require('../utils/ExpressError');
 
 const token_key = process.env.TOKEN_KEY;
+
+const updateGraph = async (videoID, patientID) => {
+    const video = await videoModel.findById(videoID);
+    const patient = await patientModel.findById(patientID).populate('videosCompleted');
+    const graph = await graphModel.findOne({ patientID, category: video.category });
+    const ageGroup = `${video.monthMin}-${video.monthMax}`;
+    const index = graph.yAxis.indexOf(ageGroup);
+    const videos = await videoModel.find({ monthMin: video.monthMin, monthMax: video.monthMax, category: video.category });
+    let videosCompleted = 0;
+    for (const watchedVideo of patient.videosCompleted) {
+        if (video.category === watchedVideo.category && video.monthMin === watchedVideo.monthMin && video.monthMax === watchedVideo.monthMax)
+            videosCompleted++;
+    }
+    graph.xAxis[index] = (videosCompleted / videos.length) * 100;
+    await graph.save();
+}
 
 module.exports.findUser = async (req, res, next) => {
     const { name, email } = req.query;
@@ -31,6 +48,9 @@ module.exports.authenticate = async (req, res, next) => {
                 dob,
                 address
             });
+            for(const category of ['Cognitive', 'Fine Motor', 'Sensory', 'Gross Motor', 'Speech']) {
+                await graphModel.create({ patientID: patient._id, category });
+            }
         }
 
         const token = jwt.sign({
@@ -89,6 +109,7 @@ module.exports.watchVideo = async (req, res, next) => {
                 videosCompleted: videoId
             }
         });
+        await updateGraph(videoId, user.patient_id);
         return res.status(201).json({ success: true });
     } catch (err) {
         console.log(err);
@@ -118,25 +139,3 @@ module.exports.updateLevel = async (req, res, next) => {
         next(new ExpressError());
     }
 }
-
-// module.exports.developmentChart = async (req, res, next) => {
-//     const { user } = req.user;
-//     const { category } = req.query;
-//     if (!user) return next(new ExpressError('Authorization Failed', 403));
-//     try {
-//         const patient = await patientModel.findById(user.patient_id);
-//         const videosWatched = await videoModel.find({
-//             category,
-//             _id: { $in: patient.videosCompleted }
-//         });
-//         const allVideos = await videoModel.find({ category });
-
-//         let yaxisPatient = new Array(10).fill(0);
-//         let yaxisAverage = new Array(10).fill(0);
-//         for (let video in videosWatched) yaxisPatient[video.difficulty - 1]++;
-//         for 
-        
-//     } catch (err) {
-
-//     }
-// }
