@@ -10,16 +10,23 @@ const token_key = process.env.TOKEN_KEY;
 const updateGraph = async (videoID, patientID) => {
     const video = await videoModel.findById(videoID);
     const patient = await patientModel.findById(patientID).populate('videosCompleted');
+    console.log(patient.videosCompleted)
     const graph = await graphModel.findOne({ patientID, category: video.category });
+    console.log(graph)
     const ageGroup = `${video.monthMin}-${video.monthMax}`;
-    const index = graph.yAxis.indexOf(ageGroup);
+    console.log(ageGroup)
+    const index = graph.xAxis.indexOf(ageGroup);
+    console.log(index);
     const videos = await videoModel.find({ monthMin: video.monthMin, monthMax: video.monthMax, category: video.category });
+    console.log(videos)
     let videosCompleted = 0;
     for (const watchedVideo of patient.videosCompleted) {
         if (video.category === watchedVideo.category && video.monthMin === watchedVideo.monthMin && video.monthMax === watchedVideo.monthMax)
             videosCompleted++;
     }
-    graph.xAxis[index] = (videosCompleted / videos.length) * 100;
+    console.log(videosCompleted)
+    graph.yAxis[index] = (videosCompleted / videos.length) * 100;
+    console.log(graph)
     await graph.save();
 }
 

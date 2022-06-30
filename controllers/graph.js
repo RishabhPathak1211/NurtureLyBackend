@@ -27,14 +27,14 @@ module.exports.getAverageGraph = async (req, res, next) => {
     if (!category) return next(ExpressError('Missing Parameters', 401));
     try {
         const graphs = await graphModel.find({ category });
-        const xAxis = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const yAxis = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         for (const graph of graphs) {
-            graph.xAxis.forEach((val, i) => {
-                xAxis[i] += val;
+            graph.yAxis.forEach((val, i) => {
+                yAxis[i] += val;
             })
         }
-        xAxis.forEach((val, i) => xAxis[i] /= graphs.length);
-        return res.status(200).json({ xAxis, yAxis: graphs[0].yAxis });
+        yAxis.forEach((val, i) => yAxis[i] /= graphs.length);
+        return res.status(200).json({ yAxis, xAxis: graphs[0].xAxis });
     } catch (err) {
         console.log(err);
         return next(new ExpressError());
